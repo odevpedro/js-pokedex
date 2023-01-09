@@ -1,26 +1,50 @@
-const types = {    
+const types = [
 
-fire: '#e4504d',
-grass: '#9dd465',
-electric: '#f9e45f',
-water: '#6a83d6',
-ground: '#e4c967',
-rock: '#cabb7b',
-fairy: '#eeb2fa',
-poison: '#9f619d',
-bug: '#c4cf4a',
-dragon: '#857af7',
-psychic: '#e56eaf',
-flying: '#80a4f9',
-fighting: '#9b5a48',
-normal: '#bab8ab'} 
+'fire',
+'grass',
+'electric',
+'water',
+'ground',
+'rock',
+'fairy',
+'poison',
+'bug',
+'dragon',
+'psychic',
+'flying',
+'fighting',
+'normal'
+
+];
 
 
 
-const keys = Object.keys(types);
+const POKEMON_COUNT = 129;
 
-for(const key of keys){
-    types[key] = key;
-}
+const getType = (data) => {
+    const apiTypes = data.map((type) => type.type.name);
+    const type = types.find((type) => apiTypes.indexOf(type) > -1);
+    return type;
+};
 
-console.log(types);
+const fetchPokemon = async (number) => {
+    if(number === undefined) return;
+
+    const url = `https://pokeapi.co/api/v2/pokemon/${number}`;
+    const response = await fetch(url).then((response) => response.json());
+    const {id, name, types} = response;
+    const type = getType(types);
+    return {id, name, type}
+
+};
+
+const fetchPokemons = async () => {
+    for (let i = 1; i <= POKEMON_COUNT; i++) {
+        console.log(i);
+        const pokemon = await fetchPokemon(i);
+        console.log(pokemon);
+    }
+};
+
+fetchPokemons();
+
