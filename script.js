@@ -19,7 +19,28 @@ const types = [
 
 
 
-const POKEMON_COUNT = 129;
+const POKEMON_COUNT = 50;
+
+const cardHTML = `
+<div class="card id="card-{id}"><!-- /card -->
+<div class="title">
+<h2>{name}</h2>
+<small># {id}</small>
+</div>
+
+<div class="img bg-{type}">
+<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/{id}.svg" alt="{name}"> 
+</div>
+<div class="type {type}">
+<p>{type}</p>
+</div>
+<button class="favorite" data-id={id}>
+<div class="heart">
+
+</div>
+</button>`;
+
+const cards = document.querySelector('.cards');
 
 const getType = (data) => {
     const apiTypes = data.map((type) => type.type.name);
@@ -38,11 +59,30 @@ const fetchPokemon = async (number) => {
 
 };
 
+//make replace
+
+const replacer = (text, source, destination) => {
+    const regex = new RegExp(source, 'gi');
+    return text.replace(regex, destination);
+}
+
+const createPokemonCard = (pokemon) => {
+    const {id, name, type} = pokemon;
+    let newCard = replacer(cardHTML, `\{id\}`, id);
+    newCard = replacer(newCard, `\{name\}`, name);
+    newCard = replacer(newCard, `\{type\}`, type);
+
+    cards.innerHTML+= newCard;
+
+     
+}
+
 const fetchPokemons = async () => {
     for (let i = 1; i <= POKEMON_COUNT; i++) {
         console.log(i);
         const pokemon = await fetchPokemon(i);
         console.log(pokemon);
+        createPokemonCard(pokemon);
     }
 };
 
